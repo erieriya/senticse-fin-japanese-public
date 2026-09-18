@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SentiCSE · 学習中の埋め込み</title>
+<style>
+:root{font-family:system-ui,sans-serif;color:#26363c;background:#f4f6f5}*{box-sizing:border-box}body{margin:0}main{max-width:960px;margin:auto;padding:32px 20px}h1{font-size:26px;margin-bottom:6px}p{color:#596971;font-size:14px;line-height:1.8}.plot{background:white;border:1px solid #d6dfdc;border-radius:10px;padding:12px}svg{display:block;width:100%;height:auto}.controls{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:20px 0}input{flex:1;min-width:180px;accent-color:#319c8b}button{padding:9px 14px;border:1px solid #b5c9c1;border-radius:6px;background:white;cursor:pointer}button:focus-visible,input:focus-visible{outline:2px solid #319c8b}#step{font-variant-numeric:tabular-nums;font-weight:600;min-width:90px}.small{font-size:12px}.badge{font-size:12px;color:#866321}
+</style>
+<main>
+<div class="badge" id="badge"></div><h1>学習中の埋め込み分布</h1><p>同じ文が、学習ステップごとにどう散らばるかを確認します。</p>
+<div class="controls"><label for="slider">学習ステップ</label><input id="slider" type="range" min="0" value="0" step="1"><output id="step" aria-live="polite"></output><button id="download">この図をSVGで保存</button></div>
+<div id="plot" class="plot" role="img" aria-label="感情ごとの文埋め込みの2次元散布図"></div>
+<p id="count"></p><p class="small">最初のスナップショットでPCAを学習し、以後は同じ軸へ投影しています。各点は同じ文で、色は正解の感情ラベルです。軸の範囲は全表示ステップで共通です。<br>L2正規化した埋め込みの2次元投影であり、学習の進行に伴う軸外の変化までは表せません。本文や元データのIDは含みませんが、実験から生成した図はprivate側で管理してください。</p>
+</main>
+<script id="report-data" type="application/json">__REPORT_DATA__</script>
+<script>
+'use strict';
+const data=JSON.parse(document.getElementById('report-data').textContent),slider=document.getElementById('slider');
+slider.max=data.frames.length-1;
+document.getElementById('badge').textContent=data.demo?'人工データのデモ · 実際の学習結果ではありません':'SENTICSE / TRAINING EMBEDDINGS';
+document.getElementById('count').textContent=`固定した ${data.count} 文・${data.frames.length} スナップショット。否定 / 中立 / 肯定で色分けしています。`;
+function draw(){const frame=data.frames[Number(slider.value)];document.getElementById('step').textContent=`Step ${frame.step}`;document.getElementById('plot').innerHTML=frame.svg;}
+slider.addEventListener('input',draw);
+document.getElementById('download').addEventListener('click',()=>{const frame=data.frames[Number(slider.value)];const url=URL.createObjectURL(new Blob([frame.svg],{type:'image/svg+xml'}));const link=document.createElement('a');link.href=url;link.download=`embeddings-step-${frame.step}.svg`;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});draw();
+</script>
+</html>

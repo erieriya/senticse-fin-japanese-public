@@ -1,0 +1,2 @@
+# Backward-compatible requirements entry point. See README.md.
+-r requirements.txt
