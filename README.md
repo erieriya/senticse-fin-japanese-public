@@ -63,4 +63,4 @@ python -m pip install -r requirements-dev.txt
 python -m pytest -q
 ```
 
-[動作確認の範囲](docs/validation.md)と[非公開版・公開版の管理方法](docs/public-release.md)も参照してください。元の研究の説明と引用情報は [SentiCSE_README.md](SentiCSE_README.md) にあります。
+元の研究の説明と引用情報は [SentiCSE_README.md](SentiCSE_README.md) を参照してください。

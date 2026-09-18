@@ -26,8 +26,6 @@ SentEval/senteval/utils.py
 SentEval/setup.py
 SentiCSE_README.md
 conda_requirements.yaml
-docs/public-release.md
-docs/validation.md
 installation.txt
 linear_probe_eval_hfmodels.py
 linear_probe_single_ckpt.py
