@@ -1,8 +1,44 @@
 # 日本語金融テキスト向け SentiCSE
 
-このリポジトリは、日本人工知能学会全国大会2026の発表「経済ドメインにおける3値センチメントに基づく埋め込みモデルの検討」（ https://www.jstage.jst.go.jp/article/pjsai/JSAI2026/0/JSAI2026_2H5OS2b03/_article/-char/ja/ ）で使った実験コードを改良したものです。景気ウォッチャー調査のコメントを対象に、肯定・中立・否定の3値センチメントを捉える文埋め込みを学習します。[SentiCSE](https://github.com/nayohan/SentiCSE) の対照学習を拡張し、同じラベルの文を近づけ、異なるラベルの文を離す手法です。
+このリポジトリは、日本人工知能学会全国大会2026の発表「経済ドメインにおける3値センチメントに基づく埋め込みモデルの検討」（ https://www.jstage.jst.go.jp/article/pjsai/JSAI2026/0/JSAI2026_2H5OS2b03/_article/-char/ja/ ）で使った実験コードを改良したものです。景気ウォッチャー調査のコメントを対象に、肯定・中立・否定の3値センチメントを捉える文埋め込みを学習します。学習方法は [SentiCSE](https://github.com/nayohan/SentiCSE) の対照学習を拡張したもので、同じラベルの文を近づけ、異なるラベルの文を離します。
 
 このリポジトリには、学習データ、感情語辞書、学習済みモデル、実験結果は含まれていません。データは利用者が用意し、ファイルのパスを指定してください。
+
+## 学習済みモデル
+
+研究で作成した学習済みモデルは、Hugging Face で公開しています。
+
+- [eriyaharuna/japanese-financial-senticse](https://huggingface.co/eriyaharuna/japanese-financial-senticse)
+
+ベースモデルは [rinna/japanese-roberta-base](https://huggingface.co/rinna/japanese-roberta-base)、学習データは景気ウォッチャー調査（[retarfi/economy-watchers-survey](https://huggingface.co/datasets/retarfi/economy-watchers-survey)）です。
+
+次のコードで文埋め込みを計算できます。[セットアップ](#セットアップ)の手順でライブラリを入れておいてください。
+
+```python
+import torch
+import torch.nn.functional as F
+from transformers import AutoModel, T5Tokenizer
+
+model_name = "eriyaharuna/japanese-financial-senticse"
+tokenizer = T5Tokenizer.from_pretrained(model_name)
+model = AutoModel.from_pretrained(model_name)
+model.eval()
+
+texts = [
+    "来客数が増えており、売上は前年を上回っている。",
+    "新商品の売れ行きが好調で、受注も増えている。",
+    "客足が遠のき、売上は前年を大きく下回っている。",
+]
+inputs = tokenizer(texts, padding=True, truncation=True, max_length=64, return_tensors="pt")
+
+with torch.no_grad():
+    outputs = model(**inputs)
+
+embeddings = F.normalize(outputs.last_hidden_state[:, 0], dim=-1)
+print(embeddings @ embeddings.T)  # コサイン類似度
+```
+
+文埋め込みには、先頭トークンの最終層のベクトル（`last_hidden_state[:, 0]`）を使います。評価スクリプトの既定（`--pooling cls_before_pooler`）と同じ取り出し方です。`pooler_output` は学習していない層の出力なので使わないでください。読み込み時に `pooler` の重みが初期化された、`lm_head` と `mlp` の重みが使われなかった、という警告が出ますが、この使い方では問題ありません。
 
 ## セットアップ
 
