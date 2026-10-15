@@ -99,4 +99,29 @@ python -m pip install -r requirements-dev.txt
 python -m pytest -q
 ```
 
-元の研究の説明と引用情報は [SentiCSE_README.md](SentiCSE_README.md) を参照してください。
+## 引用
+
+このリポジトリのコードや学習済みモデルを使った場合は、次の論文を引用してください。
+
+```bibtex
+@inproceedings{haruna2026ternary,
+  title={Exploring an Embedding Model Using Ternary Sentiment for the Economic Domain},
+  author={Haruna, Eriya and Shishido, Naoki and Keyaki, Atsushi},
+  booktitle={Proceedings of the 40th Annual Conference of the Japanese Society for Artificial Intelligence (JSAI 2026)},
+  pages={2H5-OS-2b-03},
+  year={2026},
+  url={https://www.jstage.jst.go.jp/article/pjsai/JSAI2026/0/JSAI2026_2H5OS2b03/_article/-char/ja/},
+  note={経済ドメインにおける3値センチメントに基づく埋め込みモデルの検討 (in Japanese)}
+}
+```
+
+```bibtex
+@inproceedings{kim2024senticse,
+  title={SentiCSE: A Sentiment-aware Contrastive Sentence Embedding Framework with Sentiment-guided Textual Similarity},
+  author={Kim, Jaemin and Na, Yohan and Kim, Kangmin and Lee, Sang Rak and Chae, Dong-Kyu},
+  booktitle={LREC-COLING 2024},
+  year={2024}
+}
+```
+
+元の SentiCSE の説明は [SentiCSE_README.md](SentiCSE_README.md) を参照してください。
